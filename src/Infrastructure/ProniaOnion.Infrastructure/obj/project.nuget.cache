@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "1bVBQBVtbfVNAlUg1efdyITRghDDpO+heX9PZnbzfgoKXtdo0dbOTSei9muirITXZm2POZj5lPV+jy/i2/A1nA==",
+  "dgSpecHash": "6AVzFGdemPV2yIxcf/DBlR3DXVy3t7ArWWNnbaCWewnBvgLwUVeS4+01VYfJFXd8tfnsEzRSO+W5iNllkQ7JVg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Murad\\Desktop\\ProniaOnion\\src\\Infrastructure\\ProniaOnion.Infrastructure\\ProniaOnion.Infrastructure.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Murad\\.nuget\\packages\\fluentvalidation\\11.5.1\\fluentvalidation.11.5.1.nupkg.sha512",
+    "C:\\Users\\Murad\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.0\\fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
+    "C:\\Users\\Murad\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.5.1\\fluentvalidation.dependencyinjectionextensions.11.5.1.nupkg.sha512",
     "C:\\Users\\Murad\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\Murad\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",
     "C:\\Users\\Murad\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\2.1.1\\microsoft.data.sqlclient.sni.runtime.2.1.1.nupkg.sha512",

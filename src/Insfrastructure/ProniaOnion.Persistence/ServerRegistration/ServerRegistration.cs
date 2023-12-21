@@ -19,7 +19,7 @@ namespace ProniaOnion.Persistence.ServerRegistration
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ITagService, TagService>();
-           
+            
             return services;
         }
     }

@@ -2,12 +2,8 @@
 using ProniaOnion.Application.Abstraction.Repositories;
 using ProniaOnion.Domain.Entities;
 using ProniaOnion.Persistence.Contexts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace ProniaOnion.Persistence.Implementations.Repositories.Generic
 {
@@ -31,15 +27,15 @@ namespace ProniaOnion.Persistence.Implementations.Repositories.Generic
             _table.Remove(entity);
         }
 
-        public IQueryable<T> GetAllAsync(Expression<Func<T, bool>>? expression = null, int skip = 0, int take = 0, bool isTracking = false, params string[] includes)
+        public IQueryable<T> GetAllAsync(Expression<Func<T, bool>>? expression = null, int skip = 0, int take = 0, bool ignoreQuery=false, bool isTracking = false, params string[] includes)
         {
             var query = _table.AsQueryable();
 
             if (expression is not null) query = query.Where(expression);
-
+            
             if (skip != 0) query = query.Skip(skip);
             if (take != 0) query = query.Take(take);
-
+            
             if (includes is not null)
             {
                 for (int i = 0; i < includes.Length; i++)
@@ -47,10 +43,11 @@ namespace ProniaOnion.Persistence.Implementations.Repositories.Generic
                     query = query.Include(includes[i]);
                 }
             }
+            if (ignoreQuery) query = query.IgnoreQueryFilters();
             return isTracking ? query : query.AsNoTracking();
         }
 
-        public IQueryable<T> GetAllAsyncOrderBy(Expression<Func<T, object>> expressionOrder, int skip = 0, int take = 0, bool isDescending = false, bool isTracking = false, params string[] includes)
+        public IQueryable<T> GetAllAsyncOrderBy(Expression<Func<T, object>> expressionOrder, int skip = 0, int take = 0, bool ignoreQuery=false,bool isDescending = false, bool isTracking = false, params string[] includes)
         {
             var query = _table.AsQueryable();
 
@@ -68,6 +65,7 @@ namespace ProniaOnion.Persistence.Implementations.Repositories.Generic
                     query = query.Include(includes[i]);
                 }
             }
+            if(ignoreQuery) query = query.IgnoreQueryFilters();
             return isTracking ? query : query.AsNoTracking();
         }
 
@@ -80,6 +78,12 @@ namespace ProniaOnion.Persistence.Implementations.Repositories.Generic
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public void SoftDelete(T entity)
+        {
+            entity.IsDeleted = true;
+            _table.Update(entity);
         }
 
         public void Update(T entity)

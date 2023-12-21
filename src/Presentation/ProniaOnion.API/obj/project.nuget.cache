@@ -1,11 +1,14 @@
 {
   "version": 2,
-  "dgSpecHash": "eh1yntHkjL/gTQ/7bfl/+1fLxyR/5gpecKiLBKgLkLIDmwQpjP8CuIVuIaQ1pRLBOf4nn2HN2/P061pmKNtirg==",
+  "dgSpecHash": "+LVaayt2m651woju5ReLmrDSpvLVBxtnW0LWwIoZntMGeSEJiKxGc3efgT2Gc7Wlzy/IEyemUY2ECQZ4RxQfEA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Murad\\Desktop\\ProniaOnion\\src\\Presentation\\ProniaOnion.API\\ProniaOnion.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Murad\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Murad\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
+    "C:\\Users\\Murad\\.nuget\\packages\\fluentvalidation\\11.8.1\\fluentvalidation.11.8.1.nupkg.sha512",
+    "C:\\Users\\Murad\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.0\\fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
+    "C:\\Users\\Murad\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.8.1\\fluentvalidation.dependencyinjectionextensions.11.8.1.nupkg.sha512",
     "C:\\Users\\Murad\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Murad\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\Murad\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",

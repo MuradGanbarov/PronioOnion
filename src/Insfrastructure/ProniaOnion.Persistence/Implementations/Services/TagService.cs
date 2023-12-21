@@ -43,21 +43,16 @@ namespace ProniaOnion.Persistence.Implementations.Services
         {
 
             Expression<Func<Tag, object>> expression = GetOrderExpression(OrderBy);
-            var result = await _repository.GetAllAsyncOrderBy(expressionOrder: expression, isDescending: isDescending, skip: (page - 1) * take, take: take, isTracking: isTracking).ToListAsync();
-            ICollection<TagItemDto> resultList = new List<TagItemDto>();
-            foreach (Tag resultitem in result)
-            {
-                resultList.Add(new TagItemDto(resultitem.Id, resultitem.Name));
-
-            }
-            return resultList;
+            ICollection<Tag> tags = await _repository.GetAllAsyncOrderBy(expressionOrder: expression, isDescending: isDescending, skip: (page - 1) * take, take: take, isTracking: isTracking).ToListAsync();
+            ICollection<TagItemDto> dtos = _mapper.Map<ICollection<TagItemDto>>(tags);
+            return dtos;
         }
 
         public async Task Update(int id, TagUpdateDto tagDtos)
         {
 
             Tag tag = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
-            tag.Name = tagDtos.Name;
+            _mapper.Map(tagDtos,tag);
             _repository.Update(tag);
             await _repository.SaveChangesAsync();
         }

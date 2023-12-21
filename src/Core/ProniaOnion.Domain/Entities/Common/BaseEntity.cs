@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace ProniaOnion.Domain.Entities
 {
     public abstract class BaseEntity
@@ -17,7 +12,7 @@ namespace ProniaOnion.Domain.Entities
 
         public BaseEntity()
         {
-            CreatedAt = DateTime.Now;
+            
             CreatedBY = "murad.ganbarov";
         }
 

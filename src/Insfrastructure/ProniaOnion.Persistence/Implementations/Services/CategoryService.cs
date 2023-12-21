@@ -4,12 +4,7 @@ using ProniaOnion.Application.Abstraction.Repositories;
 using ProniaOnion.Application.Abstraction.Services;
 using ProniaOnion.Application.DTOs.Categories;
 using ProniaOnion.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ProniaOnion.Persistence.Implementations.Services
 {
@@ -27,7 +22,7 @@ namespace ProniaOnion.Persistence.Implementations.Services
 
         public async Task<ICollection<CategoryItemDto>> GetAllAsync(int page, int take)
         {
-            ICollection<Category> categories = await _repository.GetAllAsync(skip: (page - 1) * take, take: take, isTracking: false).ToListAsync();
+            ICollection<Category> categories = await _repository.GetAllAsync(skip: (page - 1) * take, take: take, isTracking: false,ignoreQuery:true).ToListAsync();
             ICollection<CategoryItemDto> dtos = _mapper.Map<ICollection<CategoryItemDto>>(categories);
             return dtos;
         }
@@ -37,26 +32,35 @@ namespace ProniaOnion.Persistence.Implementations.Services
         //    Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
         //    return new GetCategoryDto { Id = category.Id, Name = category.Name };
         //}
+
         public async Task CreateAsync(CategoryCreateDto categoryDto)
         {
             await _repository.AddAsync(_mapper.Map<Category>(categoryDto));
             await _repository.SaveChangesAsync();
         }
 
+        public async Task SoftDeleteAsync(int id)
+        {
+            Category category = await _repository.GetByIdAsync(id);
+            if (category is null) throw new Exception("Not found");
+            _repository.SoftDelete(category);
+            await _repository.SaveChangesAsync();
+
+        }
 
 
 
-        //public async Task DeleteAsync(int id)
-        //{
-        //    Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
-        //    _repository.Delete(category);
-        //    await _repository.SaveChangesAsync();
-        //}
+        public async Task DeleteAsync(int id)
+        {
+            Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
+            _repository.Delete(category);
+            await _repository.SaveChangesAsync();
+        }
 
         public async Task Update(int id, CategoryUpdateDto updateCategoryDto)
         {
             Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
-            category.Name = updateCategoryDto.Name;
+            _mapper.Map(updateCategoryDto, category);
             _repository.Update(category);
             await _repository.SaveChangesAsync();
         }
@@ -64,14 +68,9 @@ namespace ProniaOnion.Persistence.Implementations.Services
         public async Task<ICollection<CategoryItemDto>> GetAllOrderByAsync(string OrderBy, bool isDescending, int page, int take, bool isTracking)
         {
             Expression<Func<Category, object>> expression = GetOrderExpression(OrderBy);
-            var result = await _repository.GetAllAsyncOrderBy(expressionOrder: expression, isDescending: isDescending, skip: (page - 1) * take, take: take, isTracking: isTracking).ToListAsync();
-            ICollection<CategoryItemDto> resultList = new List<CategoryItemDto>();
-            foreach (Category resultitem in result)
-            {
-                resultList.Add(new CategoryItemDto(resultitem.Id, resultitem.Name));
-                
-            }
-            return resultList;
+            ICollection<Category> categories = await _repository.GetAllAsyncOrderBy(expressionOrder: expression, isDescending: isDescending, skip: (page - 1) * take, take: take, isTracking: isTracking).ToListAsync();
+            ICollection<CategoryItemDto> dtos = _mapper.Map<ICollection<CategoryItemDto>>(categories);
+            return dtos;
         }
 
 
