@@ -12,10 +12,9 @@ namespace ProniaOnion.Domain.Entities
 
         public BaseEntity()
         {
-            
             CreatedBY = "murad.ganbarov";
         }
-
+        
 
     }
 }
