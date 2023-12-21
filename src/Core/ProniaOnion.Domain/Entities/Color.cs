@@ -8,6 +8,7 @@ namespace ProniaOnion.Domain.Entities
 {
     public class Color : BaseNameableEntity
     {
+        //Relation props
         public ICollection<ProductColors>? ProductColors { get; set; }
 
 

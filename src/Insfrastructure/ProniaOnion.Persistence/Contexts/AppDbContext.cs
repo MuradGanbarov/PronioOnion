@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProniaOnion.Domain.Entities;
+using ProniaOnion.Persistence.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,15 +21,11 @@ namespace ProniaOnion.Persistence.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<ProductColors> ProductColors { get; set; }
-
+        public DbSet<ProductTags> ProductTags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        { 
-            modelBuilder.Entity<Product>().Property(p=>p.Price).IsRequired().HasColumnType("decimal(6,2)");
-            modelBuilder.Entity<Product>().Property(p=>p.Description).IsRequired(false).HasColumnType("text");
-            modelBuilder.Entity<Product>().Property(p => p.Name).IsRequired().HasMaxLength(100);
-            modelBuilder.Entity<Product>().Property(p => p.SKU).IsRequired().HasMaxLength(10);
-
+        {
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }
 
