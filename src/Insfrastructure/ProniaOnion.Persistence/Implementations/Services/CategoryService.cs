@@ -22,7 +22,7 @@ namespace ProniaOnion.Persistence.Implementations.Services
 
         public async Task<ICollection<CategoryItemDto>> GetAllAsync(int page, int take)
         {
-            ICollection<Category> categories = await _repository.GetAllAsync(skip: (page - 1) * take, take: take, isTracking: false,ignoreQuery:true).ToListAsync();
+            ICollection<Category> categories = await _repository.GetAllWhere(skip: (page - 1) * take, take: take, isTracking: false,ignoreQuery:true).ToListAsync();
             ICollection<CategoryItemDto> dtos = _mapper.Map<ICollection<CategoryItemDto>>(categories);
             return dtos;
         }
@@ -68,7 +68,7 @@ namespace ProniaOnion.Persistence.Implementations.Services
         public async Task<ICollection<CategoryItemDto>> GetAllOrderByAsync(string OrderBy, bool isDescending, int page, int take, bool isTracking)
         {
             Expression<Func<Category, object>> expression = GetOrderExpression(OrderBy);
-            ICollection<Category> categories = await _repository.GetAllAsyncOrderBy(expressionOrder: expression, isDescending: isDescending, skip: (page - 1) * take, take: take, isTracking: isTracking).ToListAsync();
+            ICollection<Category> categories = await _repository.GetAllOrderBy(expressionOrder: expression, isDescending: isDescending, skip: (page - 1) * take, take: take, isTracking: isTracking).ToListAsync();
             ICollection<CategoryItemDto> dtos = _mapper.Map<ICollection<CategoryItemDto>>(categories);
             return dtos;
         }

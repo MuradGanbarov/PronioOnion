@@ -9,5 +9,6 @@ namespace ProniaOnion.Application.Abstraction.Repositories
 {
     public interface IProductRepository : IRepository<Product>
     {
+    
     }
 }
