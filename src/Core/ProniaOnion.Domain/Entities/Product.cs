@@ -12,9 +12,9 @@ namespace ProniaOnion.Domain.Entities
         public string SKU { get; set; } = null!;
         public string? Description { get; set; }
         //relation's properties
-        public string CategoryId { get; set; }
+        public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
-        public ICollection<ProductColors>? ProductColors { get; set; } = null!;
+        public ICollection<ProductColors>? ProductColors { get; set; }
         public ICollection<ProductTags>? ProductTags { get; set; }    
     }
 }

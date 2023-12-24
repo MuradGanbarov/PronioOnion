@@ -9,6 +9,6 @@ using System.Threading.Tasks;
 
 namespace ProniaOnion.Application.DTOs.Products
 {
-    public record  ProductGetDto(int id, decimal Price, string SKU, string? Description,int CategoryId,IncludeCategoryDto Category,int TagId,  ICollection<IncludeTagDto> Tags);
+    public record  ProductGetDto(int id, decimal Price, string SKU, string? Description,int CategoryId,IncludeCategoryDto Category,int TagId,  ICollection<IncludeTagDto>? Tags);
     
 }

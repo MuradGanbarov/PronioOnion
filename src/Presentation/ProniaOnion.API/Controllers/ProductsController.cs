@@ -35,7 +35,7 @@ namespace ProniaOnion.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(ProductCreateDto dto)
+        public async Task<IActionResult> CreateAsync([FromForm] ProductCreateDto dto)
         {
             await _service.CreateAsync(dto);
             return StatusCode(StatusCodes.Status201Created);

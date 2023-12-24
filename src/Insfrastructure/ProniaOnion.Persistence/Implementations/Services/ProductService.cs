@@ -49,7 +49,10 @@ namespace ProniaOnion.Persistence.Implementations.Services
 
         public async Task CreateAsync(ProductCreateDto dto)
         {
-            Product product = await _repository.GetByIdAsync(dto.CategoryId)??throw new Exception("This product is already existed");
+           if( await _repository.IsExistAsync(c=>c.Name == dto.Name))
+            {
+                throw new Exception("This product is already exist");
+            }
             await _repository.AddAsync(_mapper.Map<Product>(dto));
             await _repository.SaveChangesAsync();
         }

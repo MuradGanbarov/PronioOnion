@@ -12,8 +12,8 @@ using ProniaOnion.Persistence.Contexts;
 namespace ProniaOnion.Persistence.Contexts.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231221000740_ProductTags")]
-    partial class ProductTags
+    [Migration("20231224210459_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -100,11 +100,7 @@ namespace ProniaOnion.Persistence.Contexts.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CategoryId1")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -138,7 +134,7 @@ namespace ProniaOnion.Persistence.Contexts.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId1");
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
                 });
@@ -253,7 +249,7 @@ namespace ProniaOnion.Persistence.Contexts.Migrations
                 {
                     b.HasOne("ProniaOnion.Domain.Entities.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId1")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -282,7 +278,7 @@ namespace ProniaOnion.Persistence.Contexts.Migrations
             modelBuilder.Entity("ProniaOnion.Domain.Entities.ProductTags", b =>
                 {
                     b.HasOne("ProniaOnion.Domain.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("ProductTags")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -311,6 +307,8 @@ namespace ProniaOnion.Persistence.Contexts.Migrations
             modelBuilder.Entity("ProniaOnion.Domain.Entities.Product", b =>
                 {
                     b.Navigation("ProductColors");
+
+                    b.Navigation("ProductTags");
                 });
 
             modelBuilder.Entity("ProniaOnion.Domain.Entities.Tag", b =>
