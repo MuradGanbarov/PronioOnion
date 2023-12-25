@@ -12,7 +12,7 @@ using ProniaOnion.Persistence.Contexts;
 namespace ProniaOnion.Persistence.Contexts.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231224210459_init")]
+    [Migration("20231225221159_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

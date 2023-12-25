@@ -9,7 +9,6 @@ namespace ProniaOnion.Domain.Entities
         public DateTime? ModifiedAt { get; set; }
         public string CreatedBY { get; set; } = null!;
 
-
         public BaseEntity()
         {
             CreatedBY = "murad.ganbarov";
