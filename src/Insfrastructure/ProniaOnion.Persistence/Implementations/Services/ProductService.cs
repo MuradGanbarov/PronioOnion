@@ -114,6 +114,45 @@ namespace ProniaOnion.Persistence.Implementations.Services
             await _repository.SaveChangesAsync();
         }
 
+        public async Task UpdateAsync(int id,ProductUpdateDto dto)
+        {
+            string[] includes = {$"{nameof(Product.ProductColors)}", $"{nameof(Product.ProductTags)}"};
+            Product existed = await _repository.GetByIdAsync(id,includes:includes);
+            if (existed is null) throw new Exception("Product is not exist");
+
+            if(dto.CategoryId != existed.CategoryId)
+            {
+                if (!await _categoryRepository.IsExistAsync(c => c.Id == dto.CategoryId)) throw new Exception("Category didn't found");
+                 
+            }
+
+            existed = _mapper.Map(dto, existed);
+            existed.ProductColors = existed.ProductColors.Where(pc => dto.ColorIds.Any(colId => pc.ColorId == colId)).ToList();
+            existed.ProductTags = existed.ProductTags.Where(pt => dto.TagIds.Any(tagId => pt.TagId == tagId)).ToList();
+            foreach(var cId in dto.ColorIds)
+            {
+                if(!await _colorRepository.IsExistAsync(c=>c.Id == cId))
+                    throw new Exception("this color is not existed");
+                if (!existed.ProductColors.Any(pc => pc.ColorId == cId))
+                {
+                    existed.ProductColors.Add(new ProductColors { ColorId = cId });
+                }
+            }
+
+            foreach(var tId in dto.TagIds)
+            {
+                if(!await _tagRepository.IsExistAsync(t=>t.Id==id))
+                    throw new Exception("this tag is not existed");
+                if(!existed.ProductTags.Any(pt=>pt.TagId == tId))
+                {
+                    existed.ProductTags.Add(new ProductTags { TagId = tId });
+                }
+            }
+
+            _repository.Update(existed);
+            await _repository.SaveChangesAsync();
+
+        }
 
         public Expression<Func<Product, object>> GetOrderExpression(string orderBy)
         {

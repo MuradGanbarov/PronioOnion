@@ -12,7 +12,9 @@ namespace ProniaOnion.Application.MappingProfiles
             CreateMap<Product,ProductItemDto>().ReverseMap();
             CreateMap<Product,ProductGetDto>().ReverseMap().ForMember(x=>x.ProductTags, opt=>opt.Ignore()).ForMember(x=>x.ProductColors, opt=>opt.Ignore());
             CreateMap<ProductCreateDto, Product>().ReverseMap();
+            CreateMap<ProductUpdateDto, Product>().ReverseMap();
             CreateMap<Product, IncludeColorDto>();
+
         }
     }
 }
