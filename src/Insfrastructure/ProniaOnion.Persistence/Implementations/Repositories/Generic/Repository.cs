@@ -91,7 +91,7 @@ namespace ProniaOnion.Persistence.Implementations.Repositories
         {
             IQueryable<T> query = _table.Where(x=>x.Id == id);
             
-            query = _addIncludes(query);
+            query = _addIncludes(query,includes);//bele yazmisdin
 
             if(!isTracking) query = query.AsNoTracking();
             if(ignoreQuery) query = query.IgnoreQueryFilters();

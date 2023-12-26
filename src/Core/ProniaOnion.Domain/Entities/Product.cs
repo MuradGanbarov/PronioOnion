@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProniaOnion.Domain.Entities
+﻿namespace ProniaOnion.Domain.Entities
 {
     public class Product : BaseNameableEntity
     {
@@ -14,7 +8,7 @@ namespace ProniaOnion.Domain.Entities
         //relation's properties
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
-        public ICollection<ProductColors>? ProductColors { get; set; } = null!;
-        public ICollection<ProductTags>? ProductTags { get; set; } = null!;    
+        public ICollection<ProductColors> ProductColors { get; set; } = null!;
+        public ICollection<ProductTags> ProductTags { get; set; } = null!;    
     }
 }

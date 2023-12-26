@@ -17,7 +17,7 @@ namespace ProniaOnion.Application.MappingProfiles
             CreateMap<ColorCreateDto,Color>().ReverseMap();
             CreateMap<ColorUpdateDto, Color>().ReverseMap();
             CreateMap<Color,IncludeColorDto>().ReverseMap();
-            CreateMap<ProductColors, int>().ReverseMap();
+            CreateMap<ProductColors, IncludeColorDto>().ReverseMap();
         }
     }
 }

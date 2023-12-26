@@ -1,8 +1,6 @@
 ﻿using ProniaOnion.Application.DTOs.Categories;
 using ProniaOnion.Application.DTOs.Colors;
 using ProniaOnion.Application.DTOs.Tags;
-using ProniaOnion.Domain.Entities;
-
 namespace ProniaOnion.Application.DTOs.Products
 {
     public record ProductGetDto()
@@ -14,8 +12,8 @@ namespace ProniaOnion.Application.DTOs.Products
         public string Description { get; init; }
         public int CategoryId { get; init; }
         public IncludeCategoryDto Category { get; init; }
-        public ICollection<IncludeColorDto> ProductColors { get; set; }
-        public ICollection<IncludeTagDto> ProductTags { get; set; }
+        public ICollection<IncludeColorDto> Colors { get; set; } = null!;
+        public ICollection<IncludeTagDto> Tags { get; set; } = null!;
 
     }
         

@@ -38,21 +38,24 @@ namespace ProniaOnion.Persistence.Implementations.Services
         {
 
             if (id <= 0) throw new Exception("Bad Request");
-            string[] includes = { $"{nameof(Product.Category)}",$"{nameof(Product.ProductColors)}",$"{nameof(Product.ProductTags)}",$"{nameof(Product.ProductColors)}.{nameof(ProductColors.Color)}",$"{nameof(Product.ProductTags)}",$"{nameof(ProductTags.Tag)}"};
+            string[] includes = {"Category","ProductColors.Color","ProductTags.Tag"};
 
-            Product product = await _repository.GetByIdAsync(id, includes: includes)??throw new Exception("This Product doesn't exist");
+            Product product = await _repository.GetByIdAsync(id, includes: includes);
+                if(product is null)
+                   throw new Exception("This Product doesn't exist");
+
             ProductGetDto dto = _mapper.Map<ProductGetDto>(product);
-            dto.ProductColors = new List<IncludeColorDto>();
-            dto.ProductTags = new List<IncludeTagDto>();
+            dto.Colors = new List<IncludeColorDto>();
+            dto.Tags = new List<IncludeTagDto>();
 
-            foreach(ProductColors color in product.ProductColors)
+            foreach (ProductColors color in product.ProductColors)
             {
-                dto.ProductColors.Add(_mapper.Map<IncludeColorDto>(color.Color));
+                dto.Colors.Add(_mapper.Map<IncludeColorDto>(color.Color));
             }
 
-            foreach(ProductTags tag in product.ProductTags)
+            foreach (ProductTags tag in product.ProductTags)
             {
-                dto.ProductTags.Add(_mapper.Map<IncludeTagDto>(tag.Tag));
+                dto.Tags.Add(_mapper.Map<IncludeTagDto>(tag.Tag));
             }
 
             return dto;
