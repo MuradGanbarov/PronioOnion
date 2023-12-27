@@ -19,7 +19,7 @@ namespace ProniaOnion.Persistence.Common
             ApplyQuery<Tag>(builder);
             ApplyQuery<ProductColors>(builder);
             ApplyQuery<ProductTags>(builder);
-
+            
         }
 
 

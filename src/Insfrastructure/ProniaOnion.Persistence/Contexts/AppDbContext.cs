@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using ProniaOnion.Domain.Entities;
 using ProniaOnion.Persistence.Common;
 using ProniaOnion.Persistence.Configurations;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ProniaOnion.Persistence.Contexts
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -23,6 +24,7 @@ namespace ProniaOnion.Persistence.Contexts
         public DbSet<Color> Colors { get; set; }
         public DbSet<ProductColors> ProductColors { get; set; }
         public DbSet<ProductTags> ProductTags { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
