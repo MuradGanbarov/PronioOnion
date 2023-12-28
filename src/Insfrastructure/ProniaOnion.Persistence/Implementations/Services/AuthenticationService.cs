@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ProniaOnion.Application.Abstraction.Services;
+using ProniaOnion.Application.DTOs.Tokens;
 using ProniaOnion.Application.DTOs.Users;
 using ProniaOnion.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,14 +17,15 @@ namespace ProniaOnion.Persistence.Implementations.Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IMapper _mapper;
+        private readonly ITokenHandlerService _handler;
         private readonly UserManager<AppUser> _userManager;
-        private readonly IConfiguration _configuration;
+        
 
-        public AuthenticationService(IMapper mapper, UserManager<AppUser> userManager,IConfiguration configuration)
+        public AuthenticationService(IMapper mapper,ITokenHandlerService handler ,UserManager<AppUser> userManager)
         {
             _mapper = mapper;
+            _handler = handler;
             _userManager = userManager;
-            _configuration = configuration;
         }
 
 
@@ -45,7 +47,7 @@ namespace ProniaOnion.Persistence.Implementations.Services
             }
             
         }
-        public async Task<string> Login(LoginDto dto)
+        public async Task<TokenResponseDto> Login(LoginDto dto)
         {
             AppUser user = await _userManager.FindByNameAsync(dto.UserNameOrEmail);
             if(user is null)
@@ -58,28 +60,11 @@ namespace ProniaOnion.Persistence.Implementations.Services
                 throw new Exception("Password,Email or Password incorrect");
             }
 
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-            };
+            return _handler.CreateJwt(user,60);
 
-            var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var credentionals = new SigningCredentials(securitykey, SecurityAlgorithms.HmacSha256);
-            JwtSecurityToken token = new JwtSecurityToken
-                (
-                    issuer: _configuration["Jwt:Issuer"],
-                    audience: _configuration["Jwt:Audience"],
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpiresInMinutes"])),
-                    signingCredentials: credentionals
-                );
-            
-           return new JwtSecurityTokenHandler().WriteToken(token);
-            
         }
 
-        
+
 
     }
 }

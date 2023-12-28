@@ -26,10 +26,7 @@ namespace ProniaOnion.API.Controllers
 
         public async Task<IActionResult> Login([FromForm]LoginDto dto)
         {
-                string token = await _service.Login(dto);
-                return Ok(new { Token = token });
-            
+            return Ok(await _service.Login(dto));
         }
-
     }
 }
