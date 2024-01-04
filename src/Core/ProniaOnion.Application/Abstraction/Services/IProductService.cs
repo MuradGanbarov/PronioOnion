@@ -15,6 +15,8 @@ namespace ProniaOnion.Application.Abstraction.Services
         Task<ICollection<ProductItemDto>> GetAllOrderByAsync(string OrderBy, bool isDescending, int page, int take, bool isTracking);
         Task CreateAsync(ProductCreateDto productDto);  
         Task UpdateAsync(int id,ProductUpdateDto dto);
-
+        Task SoftDeleteAsync(int id);
+        Task Delete(int id);
+        Task ReverseSoftDelete(int id);
     }
 }

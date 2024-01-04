@@ -28,5 +28,13 @@ namespace ProniaOnion.API.Controllers
         {
             return Ok(await _service.Login(dto));
         }
+
+        [HttpPost("LoginByRefresh")]
+
+        public async Task<IActionResult> LoginByRefresh(string refToken)
+        {
+            return Ok(await _service.LoginByRefreshToken(refToken));
+        }
+
     }
 }

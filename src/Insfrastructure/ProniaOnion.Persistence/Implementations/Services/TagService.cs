@@ -32,21 +32,6 @@ namespace ProniaOnion.Persistence.Implementations.Services
             await _repository.SaveChangesAsync();
         }
 
-        public async Task SoftDeleteAsync(int id)
-        {
-            Tag tag = await _repository.GetByIdAsync(id);
-            if (tag is null) throw new Exception("Not found");
-            _repository.SoftDelete(tag);
-            await _repository.SaveChangesAsync();
-
-        }
-        public async Task DeleteAsync(int id)
-        {
-            Tag tag = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
-            _repository.Delete(tag);
-            await _repository.SaveChangesAsync();
-        }
-
         public async Task<ICollection<TagItemDto>> GetAllAsync(int page, int take)
         {
             ICollection<Tag> tags = await _repository.GetAllWhere(skip: (page - 1) * take, take: take,ignoreQuery:false,isTracking: false).ToListAsync();
@@ -68,6 +53,32 @@ namespace ProniaOnion.Persistence.Implementations.Services
             Tag tag = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
             _mapper.Map(tagDtos,tag);
             _repository.Update(tag);
+            await _repository.SaveChangesAsync();
+        }
+
+        public async Task SoftDeleteAsync(int id)
+        {
+            Tag tag = await _repository.GetByIdAsync(id) ?? throw new Exception("This tag doesn't found");
+            _repository.SoftDelete(tag);
+            await _repository.SaveChangesAsync();
+        }
+
+        public async Task ReverseSoftDelete(int id)
+        {
+            Tag tag = await _repository.GetByIdAsync(id) ?? throw new Exception("This tag doesn't found");
+            _repository.ReverseSoftDelete(tag);
+            await _repository.SaveChangesAsync();
+        }
+        public async Task Delete(int id)
+        {
+            Tag tag = await _repository.GetByIdAsync(id) ?? throw new Exception("This tag doesn't found");
+            if (tag.IsDeleted == true)
+            {
+                _repository.ReverseSoftDelete(tag);
+                _repository.Delete(tag);
+            }
+            else _repository.Delete(tag);
+
             await _repository.SaveChangesAsync();
         }
 

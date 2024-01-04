@@ -7,6 +7,7 @@ using ProniaOnion.Application.Abstraction.Services;
 using ProniaOnion.Application.DTOs.Tokens;
 using ProniaOnion.Application.DTOs.Users;
 using ProniaOnion.Domain.Entities;
+using ProniaOnion.Domain.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -45,26 +46,64 @@ namespace ProniaOnion.Persistence.Implementations.Services
 
                 throw new Exception(message.ToString());
             }
-            
+
+            await _userManager.AddToRoleAsync(user,UserRole.Member.ToString());
+
         }
         public async Task<TokenResponseDto> Login(LoginDto dto)
         {
             AppUser user = await _userManager.FindByNameAsync(dto.UserNameOrEmail);
-            if(user is null)
+            if (user is null)
             {
                 user = await _userManager.FindByEmailAsync(dto.UserNameOrEmail);
                 if (user is null) throw new Exception("Password,Email or Password incorrect");
             }
-            if(!await _userManager.CheckPasswordAsync(user, dto.Password))
+            if (!await _userManager.CheckPasswordAsync(user, dto.Password))
             {
                 throw new Exception("Password,Email or Password incorrect");
             }
 
-            return _handler.CreateJwt(user,60);
+            ICollection<Claim> claims = await _createClaims(user);
+
+            
+            TokenResponseDto tokenDto = _handler.CreateJwt(user,claims,1);
+            user.RefreshToken = tokenDto.RefreshToken;
+            user.RefreshTokenExpireAt = tokenDto.RefreshTokenExpireAt;
+            await _userManager.UpdateAsync(user);
+            return tokenDto;
 
         }
 
+        private async Task<ICollection<Claim>> _createClaims(AppUser user)
+        {
+            ICollection<Claim> claims = new List<Claim>()
+            {
+               new Claim(ClaimTypes.NameIdentifier, user.Id),
+               new Claim(ClaimTypes.Name, user.UserName),
+               new Claim(ClaimTypes.Email, user.Email),
+               new Claim(ClaimTypes.GivenName, user.Name),
+               new Claim(ClaimTypes.Surname, user.Surname)
+            };
+            foreach (var role in await _userManager.GetRolesAsync(user))
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            return claims;
+        }
 
+        public async Task<TokenResponseDto> LoginByRefreshToken(string refToken)
+        {
+            AppUser? user = await _userManager.Users.SingleOrDefaultAsync(u=>u.RefreshToken==refToken);
+            if (user is null) throw new Exception("This user coudn't found");
+            if (user.RefreshTokenExpireAt < DateTime.UtcNow) throw new Exception("Expired refresh token");
+          
+            TokenResponseDto tokenDto = _handler.CreateJwt(user, await _createClaims(user), 60);
+            user.RefreshToken = tokenDto.RefreshToken;
+            user.RefreshTokenExpireAt = tokenDto.RefreshTokenExpireAt;
+            await _userManager.UpdateAsync(user);
+            return tokenDto;
+            
+        }
 
     }
 }

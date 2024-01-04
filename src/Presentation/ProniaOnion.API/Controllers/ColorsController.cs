@@ -1,11 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProniaOnion.Application.Abstraction.Services;
 using ProniaOnion.Application.DTOs.Colors;
+using ProniaOnion.Domain.Extentions;
+using ProniaOnion.Domain.Enums;
 
 namespace ProniaOnion.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [AuthorizeRoles(UserRole.Admin, UserRole.Moderator)]
+
     public class ColorsController : ControllerBase
     {
         private readonly IColorService _service;

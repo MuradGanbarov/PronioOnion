@@ -30,8 +30,7 @@ namespace ProniaOnion.Infrastructure.ServiceRegistration
                     ValidIssuer = configuration["Jwt:Issuer"],
                     ValidAudience = configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-                    LifetimeValidator = (notBefore, expired, security, param) => expired > DateTime.Now
-                    
+                    LifetimeValidator = (notBefore, expires, security, param) => expires > DateTime.UtcNow
                 };
             }).AddJwtBearer("SuperAdmin",opt =>
             {
@@ -42,14 +41,14 @@ namespace ProniaOnion.Infrastructure.ServiceRegistration
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
 
-
                     ValidIssuer = configuration["Jwt:Issuer"],
                     ValidAudience = configuration["Jwt:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
-                    LifetimeValidator = (notBefore, expired, token, param) => token != null ? expired < DateTime.UtcNow : false
+                    LifetimeValidator = (notBefore, expires, token, param) => token != null ? expires > DateTime.UtcNow : false
                     
                 };
             });
+            services.AddAuthorization();
             services.AddScoped<ITokenHandlerService, a.TokenHandlerService>();
             return services; ;
 

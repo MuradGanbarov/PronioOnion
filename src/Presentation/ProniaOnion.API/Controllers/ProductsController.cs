@@ -3,12 +3,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProniaOnion.Application.Abstraction.Services;
 using ProniaOnion.Application.DTOs.Products;
+using ProniaOnion.Domain.Enums;
+using ProniaOnion.Domain.Extentions;
 
 namespace ProniaOnion.API.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
+    [AuthorizeRoles(UserRole.Admin,UserRole.Moderator)]
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _service;
@@ -20,6 +22,7 @@ namespace ProniaOnion.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get(int page=1,int take = 3)
         {
+            HttpContextAccessor contextAccessor = new HttpContextAccessor();
             return Ok(await _service.GetAllPaginatedAsync(page,take));
         }
 
@@ -51,6 +54,33 @@ namespace ProniaOnion.API.Controllers
             await _service.UpdateAsync(id,dto);
             return StatusCode(StatusCodes.Status204NoContent);
         }
+
+        [HttpDelete("SoftDelete/{id}")]
+        public async Task<IActionResult> SoftDelete(int id)
+        {
+            if (id <= 0) return StatusCode(StatusCodes.Status400BadRequest);
+            await _service.SoftDeleteAsync(id);
+            return StatusCode(StatusCodes.Status200OK);
+        }
+
+        [HttpDelete("ReverseDelete/{id}")]
+
+        public async Task<IActionResult> ReverseDelete(int id)
+        {
+            if (id <= 0) return StatusCode(StatusCodes.Status400BadRequest);
+            await _service.ReverseSoftDelete(id);
+            return StatusCode(StatusCodes.Status200OK);
+        }
+        
+        [HttpDelete("DeleteFromDb/{id}")]
+        [AuthorizeRoles(UserRole.Admin)]
+        public async Task<IActionResult> HardDelete(int id)
+        {
+            if (id <= 0) return StatusCode(StatusCodes.Status400BadRequest);
+            await _service.Delete(id);
+            return StatusCode(StatusCodes.Status200OK);
+        }
+
 
     }
 }

@@ -97,25 +97,7 @@ namespace ProniaOnion.Persistence.Implementations.Services
             await _repository.SaveChangesAsync();
         }
 
-        public async Task SoftDelete(int id)
-        {
-            if (id <= 0) throw new Exception("This product is not exist");
-            Product existed = await _repository.GetByIdAsync(id);
-            _repository.SoftDelete(existed);
-            await _repository.SaveChangesAsync();
-        }
-
-        public async Task Delete(int id)
-        {
-            Product existed = await _repository.GetByIdAsync(id)??throw new Exception("This product is not found");
-            if(existed.IsDeleted == true)
-            {
-                _repository.ReverseSoftDelete(existed);
-            }
-
-            _repository.Delete(existed);
-            await _repository.SaveChangesAsync();
-        }
+        
 
         public async Task UpdateAsync(int id,ProductUpdateDto dto)
         {
@@ -135,7 +117,7 @@ namespace ProniaOnion.Persistence.Implementations.Services
             foreach(var cId in dto.ColorIds)
             {
                 if(!await _colorRepository.IsExistAsync(c=>c.Id == cId))
-                    throw new Exception("this color is not existed");
+                    throw new Exception("This color is not existed");
                 if (!existed.ProductColors.Any(pc => pc.ColorId == cId))
                 {
                     existed.ProductColors.Add(new ProductColors { ColorId = cId });
@@ -145,7 +127,7 @@ namespace ProniaOnion.Persistence.Implementations.Services
             foreach(var tId in dto.TagIds)
             {
                 if(!await _tagRepository.IsExistAsync(t=>t.Id==id))
-                    throw new Exception("this tag is not existed");
+                    throw new Exception("This tag is not existed");
                 if(!existed.ProductTags.Any(pt=>pt.TagId == tId))
                 {
                     existed.ProductTags.Add(new ProductTags { TagId = tId });
@@ -157,6 +139,32 @@ namespace ProniaOnion.Persistence.Implementations.Services
 
         }
 
+
+        public async Task SoftDeleteAsync(int id)
+        {
+            Product product = await _repository.GetByIdAsync(id) ?? throw new Exception("This product doesn't found");
+            _repository.SoftDelete(product);
+            await _repository.SaveChangesAsync();
+        }
+
+        public async Task ReverseSoftDelete(int id)
+        {
+            Product product = await _repository.GetByIdAsync(id) ?? throw new Exception("This product doesn't found");
+            _repository.ReverseSoftDelete(product);
+            await _repository.SaveChangesAsync();
+        }
+        public async Task Delete(int id)
+        {
+            Product product = await _repository.GetByIdAsync(id) ?? throw new Exception("This product doesn't found");
+            if (product.IsDeleted == true)
+            {
+                _repository.ReverseSoftDelete(product);
+                _repository.Delete(product);
+            }
+            else _repository.Delete(product);
+
+            await _repository.SaveChangesAsync();
+        }
         public Expression<Func<Product, object>> GetOrderExpression(string orderBy)
         {
             Expression<Func<Product, object>>? expression = null;
@@ -172,8 +180,7 @@ namespace ProniaOnion.Persistence.Implementations.Services
 
             return expression;
         }
-
-
-
+    
+    
     }
 }

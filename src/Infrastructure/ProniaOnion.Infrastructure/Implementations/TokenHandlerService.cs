@@ -5,6 +5,7 @@ using ProniaOnion.Application.DTOs.Tokens;
 using ProniaOnion.Domain.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 
@@ -18,17 +19,10 @@ namespace ProniaOnion.Infrastructure.Implementations
         {
             _configuration = configuration;
         }
-        public TokenResponseDto CreateJwt(AppUser user,int minutes)
+        public TokenResponseDto CreateJwt(AppUser user,IEnumerable<Claim> claims,int minutes)
         {
             
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier,user.Id),
-                new Claim(ClaimTypes.Name, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName,user.Name),
-                new Claim(ClaimTypes.Surname,user.Surname)
-            };
+           
 
             var securitykey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 
@@ -39,12 +33,20 @@ namespace ProniaOnion.Infrastructure.Implementations
                     issuer: _configuration["Jwt:Issuer"],
                     audience: _configuration["Jwt:Audience"],
                     claims: claims,
-                    expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["Jwt:ExpiresInMinutes"])),
-                    signingCredentials: credentionals
+                    notBefore: DateTime.UtcNow,
+                    expires: DateTime.UtcNow.AddMinutes(minutes),
+                    signingCredentials : credentionals
                 );
             JwtSecurityTokenHandler handler = new();
-            TokenResponseDto dto = new TokenResponseDto(handler.WriteToken(token),token.ValidTo,user.UserName);
+            TokenResponseDto dto = new TokenResponseDto(handler.WriteToken(token),token.ValidTo,user.UserName,CreateRefreshToken(),token.ValidTo.AddMinutes(3));
             return dto;
         }
+
+        public string CreateRefreshToken()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+
     }
 }

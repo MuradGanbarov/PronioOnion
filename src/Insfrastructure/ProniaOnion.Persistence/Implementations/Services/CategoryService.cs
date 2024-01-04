@@ -27,39 +27,15 @@ namespace ProniaOnion.Persistence.Implementations.Services
             return dtos;
         }
 
-        //public async Task<GetCategoryDto> GetByIdAsync(int id)
-        //{
-        //    Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
-        //    return new GetCategoryDto { Id = category.Id, Name = category.Name };
-        //}
-
         public async Task CreateAsync(CategoryCreateDto categoryDto)
         {
             await _repository.AddAsync(_mapper.Map<Category>(categoryDto));
             await _repository.SaveChangesAsync();
         }
 
-        public async Task SoftDeleteAsync(int id)
-        {
-            Category category = await _repository.GetByIdAsync(id);
-            if (category is null) throw new Exception("Not found");
-            _repository.SoftDelete(category);
-            await _repository.SaveChangesAsync();
-
-        }
-
-
-
-        public async Task DeleteAsync(int id)
-        {
-            Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
-            _repository.Delete(category);
-            await _repository.SaveChangesAsync();
-        }
-
         public async Task Update(int id, CategoryUpdateDto updateCategoryDto)
         {
-            Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("Not found");
+            Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("This category didn't found");
             _mapper.Map(updateCategoryDto, category);
             _repository.Update(category);
             await _repository.SaveChangesAsync();
@@ -73,7 +49,31 @@ namespace ProniaOnion.Persistence.Implementations.Services
             return dtos;
         }
 
+        public async Task SoftDeleteAsync(int id)
+        {
+            Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("This category doesn't found");
+            _repository.SoftDelete(category);
+            await _repository.SaveChangesAsync();
+        }
 
+        public async Task ReverseSoftDelete(int id)
+        {
+            Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("This category doesn't found");
+            _repository.ReverseSoftDelete(category);
+            await _repository.SaveChangesAsync();
+        }
+        public async Task Delete(int id)
+        {
+            Category category = await _repository.GetByIdAsync(id) ?? throw new Exception("This category doesn't found");
+            if (category.IsDeleted == true)
+            {
+                _repository.ReverseSoftDelete(category);
+                _repository.Delete(category);
+            }
+            else _repository.Delete(category);
+
+            await _repository.SaveChangesAsync();
+        }
         public Expression<Func<Category, object>> GetOrderExpression(string orderBy)
         {
             Expression<Func<Category, object>>? expression = null;

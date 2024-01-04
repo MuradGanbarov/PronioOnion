@@ -7,5 +7,6 @@ namespace ProniaOnion.Application.Abstraction.Services
     {
         Task Register(RegisterDto dto);
         Task<TokenResponseDto> Login(LoginDto dto);
+        Task<TokenResponseDto> LoginByRefreshToken(string refresh);
     }
 }

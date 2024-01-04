@@ -36,6 +36,7 @@ namespace ProniaOnion.Persistence.ServerRegistration
                 opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
             }).AddDefaultTokenProviders().AddEntityFrameworkStores<AppDbContext>();
             services.AddScoped<IAuthenticationService,AuthenticationService>();
+            services.AddScoped<AppDbContextInitializer>();
             return services;
         }
     }
